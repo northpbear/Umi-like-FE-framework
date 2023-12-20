@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  babel-standalone:
+    specifier: ^6.26.0
+    version: 6.26.0
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -13,6 +16,10 @@ dependencies:
     version: 18.2.0(react@18.2.0)
 
 packages:
+
+  /babel-standalone@6.26.0:
+    resolution: {integrity: sha1-Ffs9NfLEVmlYFevx7Zb+fwFbaIY=}
+    dev: false
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha1-GSA/tZmR35jjoocFDUZHzerzJJk=}
