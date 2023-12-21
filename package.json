@@ -5,6 +5,6 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "umi-like:app": "pnpm --filter app exec umi-like"
+    "start:app": "pnpm --filter app run start"
   }
 }
