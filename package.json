@@ -6,5 +6,8 @@
   "license": "ISC",
   "scripts": {
     "start:app": "pnpm --filter app run start"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
   }
 }
