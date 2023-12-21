@@ -7,15 +7,13 @@
   },
   "scripts": {
     "build": "pnpm esbuild src/** --bundle --outdir=lib",
-    "dev": "pnpm build -- --watch"
+    "dev": "pnpm build --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "babel-standalone": "^6.26.0",
-    "commander": "^11.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "commander": "^11.1.0"
   }
 }

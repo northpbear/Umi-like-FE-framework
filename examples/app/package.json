@@ -4,12 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "umi-like start"
+    "build": "pnpm esbuild src/** --bundle --outdir=www",
+    "dev": "pnpm build --watch",
+    "serve": "cd ./www && PORT=8000 serve"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "framework": "workspace:*"
+    "framework": "workspace:*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
   }
 }
