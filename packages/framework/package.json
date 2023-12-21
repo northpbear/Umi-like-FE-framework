@@ -5,6 +5,10 @@
   "bin": {
     "umi-like": "./bin/umi-like.js"
   },
+  "scripts": {
+    "build": "pnpm esbuild src/** --bundle --outdir=lib",
+    "dev": "pnpm build -- --watch"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

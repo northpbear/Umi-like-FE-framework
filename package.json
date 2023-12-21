@@ -5,9 +5,12 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start:app": "pnpm --filter app run start"
+    "start:app": "pnpm --filter app run start",
+    "build": "pnpm -r --filter ./packages/** run build",
+    "dev": "pnpm -r --filter ./packages/* --parallel run dev"
   },
   "devDependencies": {
+    "esbuild": "^0.19.10",
     "typescript": "^5.3.3"
   }
 }
