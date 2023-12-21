@@ -1,17 +1,10 @@
 {
   "name": "Umi-like-FE-framework",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "bin": {
-    "umi-like": "./bin/umi-like.js"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "babel-standalone": "^6.26.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+  "scripts": {
+    "umi-like:app": "pnpm --filter app exec umi-like"
   }
 }
