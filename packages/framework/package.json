@@ -6,7 +6,7 @@
     "umi-like": "./bin/umi-like.js"
   },
   "scripts": {
-    "build": "pnpm esbuild src/** --bundle --outdir=lib --platform=node",
+    "build": "pnpm esbuild src/** --bundle --outdir=lib --platform=node --external:esbuild",
     "dev": "pnpm build --watch"
   },
   "keywords": [],

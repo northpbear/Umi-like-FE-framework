@@ -2,6 +2,7 @@
 node_modules
 dist
 packages/**/lib
+examples/app/www
 
 .idea
 .history
