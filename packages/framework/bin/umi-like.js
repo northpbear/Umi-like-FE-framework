@@ -12,7 +12,8 @@ program.command('dev')
     .description('框架启动服务')
     .action(function (name, other) {
         console.log(`==== run dev ====`)
-        require('../lib/dev');
+        const { dev } = require('../lib/dev');
+        dev();
     });
 
 program.parse(process.argv);
