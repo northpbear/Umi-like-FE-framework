@@ -10,6 +10,7 @@ import {
   DEFAULT_PORT,
   htmlTemplate,
 } from "./constants";
+import { hmr } from "./hmr/server";
 
 class DevServe {
   ctx: esbuild.BuildContext | null = null;
@@ -80,7 +81,7 @@ export const dev = async () => {
       devServe.cancel();
       process.exit(1);
     });
-    const app = express();
+    const app = hmr(express());
 
     app.get("/", (_, res) => {
       // see https://expressjs.com/en/api.html#res.set
