@@ -1,6 +1,7 @@
 import path from "node:path";
 import express from "express";
 import * as esbuild from "esbuild";
+import portfinder from "portfinder";
 import {
   DEFAULT_BUILD_PORT,
   DEFAULT_ENTRY_POINTS,
@@ -12,8 +13,20 @@ import {
 
 class DevServe {
   ctx: esbuild.BuildContext | null = null;
+  private _port: number = DEFAULT_BUILD_PORT;
+
+  /**
+   * 当前devServe占用的端口号
+   * @readonly
+   * @memberof DevServe
+   */
+  get port() {
+    return this._port;
+  }
 
   async create() {
+    this._port = await this.getPort();
+
     this.ctx = await esbuild.context({
       format: "iife",
       logLevel: "error",
@@ -29,7 +42,7 @@ class DevServe {
 
   async serve() {
     return await this.ctx?.serve({
-      port: DEFAULT_BUILD_PORT,
+      port: this.port,
       host: DEFAULT_HOST,
       servedir: DEFAULT_OUTPUT_DIR,
       onRequest: (args) => {
@@ -42,6 +55,15 @@ class DevServe {
 
   cancel() {
     this.ctx?.cancel();
+  }
+
+  /**
+   * 获取一个可用的端口号
+   */
+  private async getPort() {
+    return await portfinder.getPortPromise({
+      port: DEFAULT_BUILD_PORT,
+    });
   }
 }
 
@@ -63,7 +85,7 @@ export const dev = async () => {
     app.get("/", (_, res) => {
       // see https://expressjs.com/en/api.html#res.set
       res.set("Content-Type", "text/html");
-      res.send(htmlTemplate);
+      res.send(htmlTemplate(devServe.port));
     });
 
     app.listen(DEFAULT_PORT, async () => {

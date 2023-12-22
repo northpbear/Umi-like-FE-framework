@@ -4,7 +4,7 @@ export const DEFAULT_BUILD_PORT = 8889;
 export const DEFAULT_OUTPUT_DIR = "www";
 export const DEFAULT_ENTRY_POINTS = "src/index.tsx";
 
-export const htmlTemplate = `<!DOCTYPE html>
+export const htmlTemplate = (port: number) => `<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -15,7 +15,7 @@ export const htmlTemplate = `<!DOCTYPE html>
     <div id="root">
       <span>loading...</span>
     </div>
-    <script src="http://${DEFAULT_HOST}:${DEFAULT_BUILD_PORT}/index.js"></script>
+    <script src="http://${DEFAULT_HOST}:${port}/index.js"></script>
   </body>
 </html>
 `;
