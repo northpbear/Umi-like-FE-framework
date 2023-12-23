@@ -2383,9 +2383,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React5 = require_react();
+          var React8 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React5.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React8.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3990,7 +3990,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React5.Children.forEach(props.children, function(child) {
+                  React8.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -12437,7 +12437,7 @@
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React5.Component().refs;
+          var emptyRefsObject = new React8.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -23509,7 +23509,7 @@
   });
 
   // src/index.tsx
-  var import_react2 = __toESM(require_react());
+  var import_react5 = __toESM(require_react());
   var import_client = __toESM(require_client());
 
   // ../../node_modules/.pnpm/react-router-dom@6.21.1_react-dom@18.2.0_react@18.2.0/node_modules/react-router-dom/dist/index.js
@@ -25470,26 +25470,29 @@
   };
 
   // src/pages/Bar/index.tsx
-  var Bar_default = (props) => {
-    return "Bar";
+  var import_react2 = __toESM(require_react());
+  var Bar_default = () => {
+    return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, /* @__PURE__ */ import_react2.default.createElement("p", null, "Bar"), /* @__PURE__ */ import_react2.default.createElement(Link, { to: "/" }, "Home"));
   };
 
   // src/pages/Foo/index.tsx
-  var Foo_default = (props) => {
-    return "Foo";
+  var import_react3 = __toESM(require_react());
+  var Foo_default = () => {
+    return /* @__PURE__ */ import_react3.default.createElement(import_react3.default.Fragment, null, /* @__PURE__ */ import_react3.default.createElement("p", null, "Foo"), /* @__PURE__ */ import_react3.default.createElement(Link, { to: "/" }, "Home"));
   };
 
   // src/pages/Home/index.tsx
-  var Home_default = (props) => {
-    return "Home";
+  var import_react4 = __toESM(require_react());
+  var Home_default = () => {
+    return /* @__PURE__ */ import_react4.default.createElement(import_react4.default.Fragment, null, /* @__PURE__ */ import_react4.default.createElement("p", null, "Home"), /* @__PURE__ */ import_react4.default.createElement(Link, { to: "/bar" }, "Bar"), " | ", /* @__PURE__ */ import_react4.default.createElement(Link, { to: "/foo" }, "Foo"));
   };
 
   // src/index.tsx
   var App = () => {
-    return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, /* @__PURE__ */ import_react2.default.createElement(HashRouter, null, /* @__PURE__ */ import_react2.default.createElement(Routes, null, /* @__PURE__ */ import_react2.default.createElement(Route, { path: "/", element: /* @__PURE__ */ import_react2.default.createElement(Layout, null) }, /* @__PURE__ */ import_react2.default.createElement(Route, { path: "/", element: /* @__PURE__ */ import_react2.default.createElement(Home_default, null) }), /* @__PURE__ */ import_react2.default.createElement(Route, { path: "/foo", element: /* @__PURE__ */ import_react2.default.createElement(Foo_default, null) }), /* @__PURE__ */ import_react2.default.createElement(Route, { path: "/bar", element: /* @__PURE__ */ import_react2.default.createElement(Bar_default, null) })))));
+    return /* @__PURE__ */ import_react5.default.createElement(import_react5.default.Fragment, null, /* @__PURE__ */ import_react5.default.createElement(HashRouter, null, /* @__PURE__ */ import_react5.default.createElement(Routes, null, /* @__PURE__ */ import_react5.default.createElement(Route, { path: "/", element: /* @__PURE__ */ import_react5.default.createElement(Layout, null) }, /* @__PURE__ */ import_react5.default.createElement(Route, { path: "/", element: /* @__PURE__ */ import_react5.default.createElement(Home_default, null) }), /* @__PURE__ */ import_react5.default.createElement(Route, { path: "/foo", element: /* @__PURE__ */ import_react5.default.createElement(Foo_default, null) }), /* @__PURE__ */ import_react5.default.createElement(Route, { path: "/bar", element: /* @__PURE__ */ import_react5.default.createElement(Bar_default, null) })))));
   };
   var root = import_client.default.createRoot(document.getElementById("root"));
-  root.render(import_react2.default.createElement(App));
+  root.render(import_react5.default.createElement(App));
 })();
 /*! Bundled license information:
 
