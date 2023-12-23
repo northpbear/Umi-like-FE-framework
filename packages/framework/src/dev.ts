@@ -13,6 +13,8 @@ import {
 import { hmr, IHmrServer } from "./hmr-server";
 import { createServer } from "http";
 import type { Server as HttpServer } from "http";
+import stylePlugin from "esbuild-style-plugin";
+import { liveReload } from "./esbuild-plugins";
 
 class DevServe {
   expressApp: ReturnType<typeof express>;
@@ -51,18 +53,10 @@ class DevServe {
         "process.env.NODE_ENV": JSON.stringify("development"),
       },
       plugins: [
-        {
-          name: "liveReload",
-          setup(build) {
-            build.onEnd(function (result) {
-              if (result.errors.length) {
-                console.log(`build ended with ${result.errors.length} errors`);
-                return;
-              }
-              self.hmrWss.send(JSON.stringify({ type: "reload" }));
-            });
-          },
-        },
+        stylePlugin(),
+        liveReload({
+          hmrWss: self.hmrWss,
+        }),
       ],
     });
   }

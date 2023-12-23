@@ -6,8 +6,8 @@
     "umi-like": "./bin/umi-like.js"
   },
   "scripts": {
-    "build": "pnpm esbuild src/** --bundle --outdir=lib --platform=node --external:esbuild",
-    "build:client": "pnpm esbuild client/** --bundle --outdir=lib/client --external:esbuild",
+    "build": "pnpm esbuild ./src/** --bundle --outdir=lib --platform=node --external:esbuild",
+    "build:client": "pnpm esbuild ./client/** --bundle --outdir=lib/client --external:esbuild",
     "dev": "pnpm build --watch"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
   "dependencies": {
     "babel-standalone": "^6.26.0",
     "commander": "^11.1.0",
+    "esbuild-style-plugin": "^1.6.3",
     "express": "^4.18.2",
     "portfinder": "^1.0.32",
     "ws": "^8.15.1"

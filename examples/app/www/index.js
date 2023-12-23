@@ -25466,7 +25466,7 @@
   var Layout = () => {
     const { pathname } = useLocation();
     console.log("pathname:: ", pathname);
-    return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement("div", null, "current pathname: ", pathname), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement(Outlet, null)));
+    return /* @__PURE__ */ import_react.default.createElement("div", { className: "umi-like-layout" }, /* @__PURE__ */ import_react.default.createElement("div", { className: "umi-like-layout-header" }, "current pathname: ", pathname), /* @__PURE__ */ import_react.default.createElement("div", { className: "umi-like-layout-content" }, /* @__PURE__ */ import_react.default.createElement(Outlet, null)));
   };
 
   // src/pages/Bar/index.tsx

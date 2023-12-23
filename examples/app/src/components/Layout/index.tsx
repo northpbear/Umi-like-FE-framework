@@ -1,16 +1,17 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import "./index.css";
 
 export const Layout = () => {
   const { pathname } = useLocation();
   console.log("pathname:: ", pathname);
 
   return (
-    <>
-      <div>current pathname: {pathname}</div>
-      <div>
+    <div className="umi-like-layout">
+      <div className="umi-like-layout-header">current pathname: {pathname}</div>
+      <div className="umi-like-layout-content">
         <Outlet />
       </div>
-    </>
+    </div>
   );
 };
