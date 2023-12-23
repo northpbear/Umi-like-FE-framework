@@ -10,9 +10,14 @@ import {
   DEFAULT_PORT,
   htmlTemplate,
 } from "./constants";
-import { hmr } from "./hmr/server";
+import { hmr, IHmrServer } from "./hmr-server";
+import { createServer } from "http";
+import type { Server as HttpServer } from "http";
 
 class DevServe {
+  expressApp: ReturnType<typeof express>;
+  httpSever: HttpServer;
+  hmrWss: IHmrServer;
   ctx: esbuild.BuildContext | null = null;
   private _port: number = DEFAULT_BUILD_PORT;
 
@@ -25,8 +30,15 @@ class DevServe {
     return this._port;
   }
 
+  constructor() {
+    this.expressApp = express();
+    this.httpSever = createServer(this.expressApp);
+    this.hmrWss = hmr(this.httpSever);
+  }
+
   async create() {
     this._port = await this.getPort();
+    const self = this;
 
     this.ctx = await esbuild.context({
       format: "iife",
@@ -38,11 +50,54 @@ class DevServe {
       define: {
         "process.env.NODE_ENV": JSON.stringify("development"),
       },
+      plugins: [
+        {
+          name: "liveReload",
+          setup(build) {
+            build.onEnd(function (result) {
+              if (result.errors.length) {
+                console.log(`build ended with ${result.errors.length} errors`);
+                return;
+              }
+              self.hmrWss.send(JSON.stringify({ type: "reload" }));
+            });
+          },
+        },
+      ],
     });
   }
 
-  async serve() {
-    return await this.ctx?.serve({
+  severStatic() {
+    const esbuildOutput = path.resolve(process.cwd(), DEFAULT_OUTPUT_DIR);
+    this.expressApp.use(
+      `/${DEFAULT_OUTPUT_DIR}`,
+      express.static(esbuildOutput)
+    );
+    this.expressApp.use(
+      `/umi-like`,
+      express.static(path.resolve(__dirname, "client"))
+    );
+  }
+
+  makeIndexHtml() {
+    this.expressApp.get("/", (_, res) => {
+      // see https://expressjs.com/en/api.html#res.set
+      res.set("Content-Type", "text/html");
+      res.send(htmlTemplate(this.port));
+    });
+  }
+
+  heartbeat() {
+    this.expressApp.get("/ping", (_, res) => {
+      // see https://expressjs.com/en/api.html#res.set
+      res.set("Content-Type", "text/html");
+      res.send("pong");
+    });
+  }
+
+  async serve(port = DEFAULT_PORT) {
+    await this.ctx?.watch();
+    await this.ctx?.serve({
       port: this.port,
       host: DEFAULT_HOST,
       servedir: DEFAULT_OUTPUT_DIR,
@@ -51,6 +106,15 @@ class DevServe {
           console.log(`${args.method}: ${args.path} ${args.timeInMS} ms`);
         }
       },
+    });
+
+    this.severStatic();
+    this.heartbeat();
+    this.makeIndexHtml();
+
+    this.httpSever.listen(port, async () => {
+      console.log(`Umi-like start at ${DEFAULT_HOST}:${port}`);
+      console.log(`Umi-like start at localhost:${port}`);
     });
   }
 
@@ -81,18 +145,8 @@ export const dev = async () => {
       devServe.cancel();
       process.exit(1);
     });
-    const app = hmr(express());
 
-    app.get("/", (_, res) => {
-      // see https://expressjs.com/en/api.html#res.set
-      res.set("Content-Type", "text/html");
-      res.send(htmlTemplate(devServe.port));
-    });
-
-    app.listen(DEFAULT_PORT, async () => {
-      devServe.serve();
-      console.log(`Umi-like start at ${DEFAULT_HOST}:${DEFAULT_PORT}`);
-    });
+    devServe.serve();
   } catch (e) {
     console.log(e);
     process.exit(1);

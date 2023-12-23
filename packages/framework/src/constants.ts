@@ -15,7 +15,10 @@ export const htmlTemplate = (port: number) => `<!DOCTYPE html>
     <div id="root">
       <span>loading...</span>
     </div>
-    <script src="http://${DEFAULT_HOST}:${port}/index.js"></script>
+    <script src="/${DEFAULT_OUTPUT_DIR}/index.js"></script>
+    <script src="/umi-like/hmr.js"></script>
+    <script>
+  </script>
   </body>
 </html>
 `;

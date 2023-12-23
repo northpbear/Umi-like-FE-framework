@@ -12,8 +12,9 @@ function clint() {
 
     socket.addEventListener("message", async ({ data: _data }) => {
       const data = JSON.parse(_data);
+      console.log("data:: ", data);
 
-      switch (data.Type) {
+      switch (data.type) {
         case "reload":
           window.location.reload();
           break;
@@ -28,6 +29,26 @@ function clint() {
           break;
       }
     });
+
+    socket.addEventListener("close", async () => {
+      if (pingTimer) {
+        clearTimeout(pingTimer);
+      }
+      console.log("Dev server disconnected. Polling for restart...");
+      await waitSuccessfulPing();
+      window.location.reload();
+    });
+  }
+}
+
+async function waitSuccessfulPing(ms = 5000) {
+  while (true) {
+    try {
+      await fetch("/ping");
+      break;
+    } catch (e) {
+      await new Promise((res) => setTimeout(res, ms));
+    }
   }
 }
 
