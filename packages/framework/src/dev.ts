@@ -13,8 +13,7 @@ import {
 import { hmr, IHmrServer } from "./hmr-server";
 import { createServer } from "http";
 import type { Server as HttpServer } from "http";
-import stylePlugin from "esbuild-style-plugin";
-import { liveReload } from "./esbuild-plugins";
+import { liveReloadPlugin, stylePlugin } from "./esbuild-plugins";
 
 class DevServe {
   expressApp: ReturnType<typeof express>;
@@ -54,7 +53,7 @@ class DevServe {
       },
       plugins: [
         stylePlugin(),
-        liveReload({
+        liveReloadPlugin({
           hmrWss: self.hmrWss,
         }),
       ],

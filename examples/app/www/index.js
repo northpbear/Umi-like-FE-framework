@@ -25463,6 +25463,24 @@
 
   // src/components/Layout/index.tsx
   var import_react = __toESM(require_react());
+
+  // style-helper:__umi_like_style_helper__
+  function injectStyle(style) {
+    if (typeof document !== "undefined") {
+      const styleElement = document.createElement("style");
+      const styleText = document.createTextNode(style);
+      styleElement.appendChild(styleText);
+      document.head.appendChild(styleElement);
+    }
+  }
+
+  // style-text:/home/user/Documents/Umi-like-FE-framework/examples/app/src/components/Layout/index.css
+  var Layout_default = ".umi-like-layout .umi-like-layout-header{color:#00000073;font-size:24px;margin-bottom:8px}.umi-like-layout .umi-like-layout-content{border-radius:4px;border:1px solid #d9d9d9;padding:8px}\n";
+
+  // style-temp:/home/user/Documents/Umi-like-FE-framework/examples/app/src/components/Layout/index.css
+  injectStyle(Layout_default);
+
+  // src/components/Layout/index.tsx
   var Layout = () => {
     const { pathname } = useLocation();
     console.log("pathname:: ", pathname);

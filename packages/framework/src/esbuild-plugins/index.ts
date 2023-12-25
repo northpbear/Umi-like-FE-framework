@@ -1,3 +1,4 @@
-import liveReload from "./live-reload";
+import liveReloadPlugin from "./live-reload";
+import stylePlugin from "./style-plugin";
 
-export { liveReload };
+export { liveReloadPlugin, stylePlugin };
