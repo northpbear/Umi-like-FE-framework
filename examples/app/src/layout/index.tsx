@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import "./index.css";
 
-export const Layout = () => {
+const Layout = () => {
   const { pathname } = useLocation();
   console.log("pathname:: ", pathname);
 
@@ -15,3 +15,5 @@ export const Layout = () => {
     </div>
   );
 };
+
+export default Layout;

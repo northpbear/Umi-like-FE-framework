@@ -1,25 +1,29 @@
 import path from "node:path";
+import fs from "node:fs";
 import express from "express";
 import * as esbuild from "esbuild";
 import portfinder from "portfinder";
 import {
   DEFAULT_BUILD_PORT,
-  DEFAULT_ENTRY_POINT,
   DEFAULT_HOST,
   DEFAULT_OUTPUT_DIR,
   DEFAULT_PORT,
-  htmlTemplate,
 } from "./constants";
 import { hmr, IHmrServer } from "./hmr-server";
 import { createServer } from "http";
 import type { Server as HttpServer } from "http";
 import { liveReloadPlugin, stylePlugin } from "./esbuild-plugins";
+import { getAppData, IAppData } from "./appData";
+import { getRoutes } from "./routes";
+import { generateEntry } from "./entry";
+import { generateHtml } from "./html";
 
 class DevServe {
   expressApp: ReturnType<typeof express>;
   httpSever: HttpServer;
   hmrWss: IHmrServer;
   ctx: esbuild.BuildContext | null = null;
+  appData: IAppData | null = null;
   private _port: number = DEFAULT_BUILD_PORT;
 
   /**
@@ -31,10 +35,11 @@ class DevServe {
     return this._port;
   }
 
-  constructor() {
+  constructor({ appData }: { appData: IAppData }) {
     this.expressApp = express();
     this.httpSever = createServer(this.expressApp);
     this.hmrWss = hmr(this.httpSever);
+    this.appData = appData;
   }
 
   async create() {
@@ -45,9 +50,9 @@ class DevServe {
       format: "iife",
       logLevel: "error",
       platform: "browser",
-      outdir: DEFAULT_OUTPUT_DIR,
+      outdir: this.appData?.paths.absOutputPath,
       bundle: true,
-      entryPoints: [path.resolve(process.cwd(), DEFAULT_ENTRY_POINT)],
+      entryPoints: [this.appData!.paths.absEntrypointPath],
       define: {
         "process.env.NODE_ENV": JSON.stringify("development"),
       },
@@ -73,10 +78,19 @@ class DevServe {
   }
 
   makeIndexHtml() {
-    this.expressApp.get("/", (_, res) => {
+    this.expressApp.get("/", (_, res, next) => {
       // see https://expressjs.com/en/api.html#res.set
       res.set("Content-Type", "text/html");
-      res.send(htmlTemplate(this.port));
+
+      const htmlPath = path.join(
+        this.appData!.paths.absOutputPath,
+        "index.html"
+      );
+      if (fs.existsSync(htmlPath)) {
+        fs.createReadStream(htmlPath).on("error", next).pipe(res);
+      } else {
+        next();
+      }
     });
   }
 
@@ -93,7 +107,7 @@ class DevServe {
     await this.ctx?.serve({
       port: this.port,
       host: DEFAULT_HOST,
-      servedir: DEFAULT_OUTPUT_DIR,
+      servedir: this.appData?.paths.absOutputPath,
       onRequest: (args) => {
         if (args.timeInMS) {
           console.log(`${args.method}: ${args.path} ${args.timeInMS} ms`);
@@ -127,7 +141,24 @@ class DevServe {
 
 export const dev = async () => {
   try {
-    const devServe = new DevServe();
+    // 框架生命周期
+    // 获取项目元数据
+    const appData = await getAppData({ cwd: process.cwd() });
+
+    // 获取 约定式路由配置
+    const routes = await getRoutes({ appData });
+    // 生成 入口 html
+    await generateHtml({ appData });
+    // 生成项目 js 入口
+    await generateEntry({
+      appData,
+      routes,
+    });
+
+    // 执行构建
+    const devServe = new DevServe({
+      appData,
+    });
     await devServe.create();
 
     process.on("SIGINT", () => {

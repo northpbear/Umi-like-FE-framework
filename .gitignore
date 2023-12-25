@@ -3,6 +3,7 @@ node_modules
 dist
 packages/**/lib
 examples/app/www
+examples/app/src/.umi-like
 
 .idea
 .history
