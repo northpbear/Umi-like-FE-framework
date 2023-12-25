@@ -18,8 +18,9 @@ import { getRoutes } from "./routes";
 import { generateEntry } from "./entry";
 import { generateHtml } from "./html";
 import { getUserConfig } from "./config";
+import { reloadClient } from "./esbuild-plugins/live-reload";
 
-class DevServe {
+export class DevServe {
   expressApp: ReturnType<typeof express>;
   httpSever: HttpServer;
   hmrWss: IHmrServer;
@@ -60,7 +61,9 @@ class DevServe {
       plugins: [
         stylePlugin(),
         liveReloadPlugin({
-          hmrWss: self.hmrWss,
+          onRebuild: () => {
+            reloadClient(self.hmrWss);
+          },
         }),
       ],
     });
@@ -151,22 +154,31 @@ export const dev = async () => {
       appData,
     });
 
-    // 获取用户自定义配置
-    const userConfig = await getUserConfig({
-      appData,
-      hmrWss: devServe.hmrWss,
-    });
-    // 生成 入口 html
-    await generateHtml({ appData, userConfig });
+    async function buildMain({ appData }: { appData: IAppData }) {
+      // 获取用户自定义配置
+      const userConfig = await getUserConfig({
+        appData,
+        hmrWss: devServe.hmrWss,
+        expressApp: devServe.expressApp,
+      });
+      // 生成 入口 html
+      await generateHtml({ appData, userConfig });
 
-    // 获取 约定式路由配置
-    const routes = await getRoutes({ appData });
+      // 获取 约定式路由配置
+      const routes = await getRoutes({ appData });
 
-    // 生成项目 js 入口
-    await generateEntry({
-      appData,
-      routes,
+      // 生成项目 js 入口
+      await generateEntry({
+        appData,
+        routes,
+      });
+    }
+
+    devServe.expressApp.on("rebuild", async () => {
+      await buildMain({ appData });
     });
+
+    await buildMain({ appData });
 
     // 执行构建
     await devServe.create();

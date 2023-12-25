@@ -5,10 +5,13 @@ import { DEFAULT_CONFIG_FILE } from "./constants";
 import esbuild from "esbuild";
 import { liveReloadPlugin } from "./esbuild-plugins";
 import { IHmrServer } from "./hmr-server";
+import { DevServe } from "./dev";
+import { reloadClient, reloadServer } from "./esbuild-plugins/live-reload";
 
 interface IGetUserConfigParams {
   appData: IAppData;
   hmrWss: IHmrServer;
+  expressApp: DevServe["expressApp"];
 }
 
 export interface IUserConfig {
@@ -18,6 +21,7 @@ export interface IUserConfig {
 export const getUserConfig = async ({
   appData,
   hmrWss,
+  expressApp,
 }: IGetUserConfigParams): Promise<IUserConfig> => {
   let config = {};
   const configFile = path.resolve(appData.paths.cwd, DEFAULT_CONFIG_FILE);
@@ -35,17 +39,25 @@ export const getUserConfig = async ({
       },
       plugins: [
         liveReloadPlugin({
-          hmrWss,
+          onRebuild: () => {
+            console.log("getUserConfig onRebuild run");
+
+            reloadServer(expressApp);
+            reloadClient(hmrWss);
+          },
         }),
       ],
     });
     await ctx.watch();
 
     try {
-      config = require(path.resolve(
+      const configJsPath = path.resolve(
         appData.paths.absTempPath,
         "umi-like.config.js"
-      )).default;
+      );
+      delete require.cache[configJsPath];
+
+      config = require(configJsPath).default;
     } catch (e) {
       console.error("getUserConfig error", e);
     }
