@@ -4,7 +4,7 @@ import * as esbuild from "esbuild";
 import portfinder from "portfinder";
 import {
   DEFAULT_BUILD_PORT,
-  DEFAULT_ENTRY_POINTS,
+  DEFAULT_ENTRY_POINT,
   DEFAULT_HOST,
   DEFAULT_OUTPUT_DIR,
   DEFAULT_PORT,
@@ -47,7 +47,7 @@ class DevServe {
       platform: "browser",
       outdir: DEFAULT_OUTPUT_DIR,
       bundle: true,
-      entryPoints: [path.resolve(process.cwd(), DEFAULT_ENTRY_POINTS)],
+      entryPoints: [path.resolve(process.cwd(), DEFAULT_ENTRY_POINT)],
       define: {
         "process.env.NODE_ENV": JSON.stringify("development"),
       },
