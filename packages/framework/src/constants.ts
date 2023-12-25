@@ -5,3 +5,5 @@ export const DEFAULT_OUTPUT_DIR = "www";
 export const DEFAULT_LAYOUT_PATH = "layout/index";
 export const DEFAULT_FRAMEWORK_NAME = "umi-like";
 export const DEFAULT_ENTRY_POINT = `src/${DEFAULT_FRAMEWORK_NAME}.tsx`;
+
+export const DEFAULT_CONFIG_FILE = `umi-like.config.ts`;

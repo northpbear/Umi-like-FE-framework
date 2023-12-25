@@ -17,6 +17,7 @@ import { getAppData, IAppData } from "./appData";
 import { getRoutes } from "./routes";
 import { generateEntry } from "./entry";
 import { generateHtml } from "./html";
+import { getUserConfig } from "./config";
 
 class DevServe {
   expressApp: ReturnType<typeof express>;
@@ -145,10 +146,22 @@ export const dev = async () => {
     // 获取项目元数据
     const appData = await getAppData({ cwd: process.cwd() });
 
+    // 创建DevServe
+    const devServe = new DevServe({
+      appData,
+    });
+
+    // 获取用户自定义配置
+    const userConfig = await getUserConfig({
+      appData,
+      hmrWss: devServe.hmrWss,
+    });
+    // 生成 入口 html
+    await generateHtml({ appData, userConfig });
+
     // 获取 约定式路由配置
     const routes = await getRoutes({ appData });
-    // 生成 入口 html
-    await generateHtml({ appData });
+
     // 生成项目 js 入口
     await generateEntry({
       appData,
@@ -156,9 +169,6 @@ export const dev = async () => {
     });
 
     // 执行构建
-    const devServe = new DevServe({
-      appData,
-    });
     await devServe.create();
 
     process.on("SIGINT", () => {

@@ -1,19 +1,26 @@
 import fs from "node:fs";
 import path from "node:path";
 import { IAppData } from "./appData";
+import { IUserConfig } from "./config";
 import { DEFAULT_FRAMEWORK_NAME, DEFAULT_OUTPUT_DIR } from "./constants";
 
 interface IGenerateHtmlParams {
   appData: IAppData;
+  userConfig: IUserConfig;
 }
 
-export const generateHtml = async ({ appData }: IGenerateHtmlParams) => {
+export const generateHtml = async ({
+  appData,
+  userConfig,
+}: IGenerateHtmlParams) => {
   const html = `
     <!DOCTYPE html>
     <html lang="en">
         <head>
             <meta charset="UTF-8" />
-            <title>${appData.pkg.name}</title>
+            <title>${
+              userConfig?.title ?? appData.pkg.name ?? "Umi-like"
+            }</title>
         </head>
 
         <body>
