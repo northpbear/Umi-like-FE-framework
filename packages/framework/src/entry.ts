@@ -40,7 +40,6 @@ export const generateEntry = async ({
   appData,
   routes,
 }: IGenerateEntryPatams) => {
-  console.log("generateEntry ==> ", appData, routes);
   const { imports, jsx } = getRouteJsx(routes);
   const entryCode = `
   import React from "react";

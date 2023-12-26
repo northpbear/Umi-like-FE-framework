@@ -155,6 +155,8 @@ export const dev = async () => {
     });
 
     async function buildMain({ appData }: { appData: IAppData }) {
+      console.log('buildMain run');
+      
       // 获取用户自定义配置
       const userConfig = await getUserConfig({
         appData,

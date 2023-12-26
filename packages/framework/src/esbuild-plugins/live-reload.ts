@@ -2,8 +2,8 @@ import { Plugin } from "esbuild";
 import { DevServe } from "../dev";
 import { IHmrServer } from "../hmr-server";
 
-type ILiveReloadArgs = {
-  onRebuild: () => void;
+export type ILiveReloadArgs = {
+  onRebuild?: () => void;
 };
 
 export default function ({ onRebuild }: ILiveReloadArgs): Plugin {
@@ -17,7 +17,7 @@ export default function ({ onRebuild }: ILiveReloadArgs): Plugin {
           return;
         }
         if (count >= 1) {
-          onRebuild();
+          onRebuild?.();
         }
         count++;
       });
