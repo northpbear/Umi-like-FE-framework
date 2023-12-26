@@ -9,7 +9,7 @@ export default () => {
   }, []);
   return (
     <>
-      <p>Home</p>
+      <p>Home123</p>
       <Link to="/bar">Bar</Link> | <Link to="/foo">Foo</Link>
     </>
   );

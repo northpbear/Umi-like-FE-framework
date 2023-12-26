@@ -15,8 +15,9 @@ import type { Options as ProxyOptions } from "http-proxy-middleware";
 
 interface IGetUserConfigParams {
   appData: IAppData;
-  hmrWss: IHmrServer;
-  expressApp: DevServe["expressApp"];
+  hmrWss?: IHmrServer;
+  expressApp?: DevServe["expressApp"];
+  isProduction?: boolean;
 }
 
 export interface IUserConfig {
@@ -30,6 +31,7 @@ interface IConfigDevServeParams {
   outdir: string;
   entryPoints: string[];
   onRebuild?: ILiveReloadArgs["onRebuild"];
+  isProduction?: boolean;
 }
 
 class ConfigDevServe {
@@ -55,6 +57,7 @@ class ConfigDevServe {
     outdir,
     entryPoints,
     onRebuild,
+    isProduction,
   }: IConfigDevServeParams) {
     const ctx = await esbuild.context({
       format: "cjs",
@@ -64,15 +67,19 @@ class ConfigDevServe {
       bundle: true,
       entryPoints,
       define: {
-        "process.env.NODE_ENV": JSON.stringify("development"),
+        "process.env.NODE_ENV": JSON.stringify(
+          isProduction ? "production" : "development"
+        ),
       },
-      plugins: [
-        liveReloadPlugin({
-          onRebuild,
-        }),
-      ],
+      plugins: isProduction
+        ? undefined
+        : [
+            liveReloadPlugin({
+              onRebuild,
+            }),
+          ],
     });
-    await ctx.watch();
+    isProduction || (await ctx.watch());
   }
 }
 
@@ -80,6 +87,7 @@ export const getUserConfig = async ({
   appData,
   hmrWss,
   expressApp,
+  isProduction,
 }: IGetUserConfigParams): Promise<IUserConfig> => {
   let config = {};
   const configFile = path.resolve(appData.paths.cwd, DEFAULT_CONFIG_FILE);
@@ -88,12 +96,14 @@ export const getUserConfig = async ({
     await ConfigDevServe.getInstance({
       outdir: appData.paths.absTempPath,
       entryPoints: [configFile],
-      onRebuild: () => {
-        console.log("getUserConfig onRebuild run");
-
-        reloadServer(expressApp);
-        reloadClient(hmrWss);
-      },
+      isProduction,
+      onRebuild: isProduction
+        ? undefined
+        : () => {
+            console.log("getUserConfig onRebuild run");
+            expressApp && reloadServer(expressApp);
+            hmrWss && reloadClient(hmrWss);
+          },
     });
     try {
       const configJsPath = path.resolve(

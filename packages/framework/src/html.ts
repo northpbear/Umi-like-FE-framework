@@ -7,11 +7,13 @@ import { DEFAULT_FRAMEWORK_NAME, DEFAULT_OUTPUT_DIR } from "./constants";
 interface IGenerateHtmlParams {
   appData: IAppData;
   userConfig: IUserConfig;
+  isProduction?: boolean;
 }
 
 export const generateHtml = async ({
   appData,
   userConfig,
+  isProduction,
 }: IGenerateHtmlParams) => {
   const html = `
     <!DOCTYPE html>
@@ -27,8 +29,10 @@ export const generateHtml = async ({
             <div id="root">
             <span>loading...</span>
             </div>
-            <script src="/${DEFAULT_OUTPUT_DIR}/${DEFAULT_FRAMEWORK_NAME}.js"></script>
-            <script src="/umi-like/hmr.js"></script>
+            <script src="${
+              isProduction ? "" : `/${DEFAULT_OUTPUT_DIR}`
+            }/${DEFAULT_FRAMEWORK_NAME}.js"></script>
+            ${isProduction ? "" : '<script src="/umi-like/hmr.js"></script>'}
             <script>
         </script>
         </body>
@@ -39,7 +43,7 @@ export const generateHtml = async ({
     const htmlPath = path.resolve(appData.paths.absOutputPath, "index.html");
     fs.mkdirSync(path.dirname(htmlPath), { recursive: true });
     fs.writeFileSync(htmlPath, html, "utf-8");
-  } catch (e) {
+  } catch (e: any) {
     throw new Error(e);
   }
 };

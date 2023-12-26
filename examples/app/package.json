@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "pnpm esbuild src/** --bundle --outdir=www",
+    "build": "umi-like build",
     "dev": "umi-like dev",
     "serve": "cd ./www && PORT=8000 serve"
   },
