@@ -11,6 +11,7 @@ import {
   reloadClient,
   reloadServer,
 } from "./esbuild-plugins/live-reload";
+import type { Options as ProxyOptions } from "http-proxy-middleware";
 
 interface IGetUserConfigParams {
   appData: IAppData;
@@ -20,6 +21,9 @@ interface IGetUserConfigParams {
 
 export interface IUserConfig {
   title?: string;
+  proxy?: {
+    [key: string]: ProxyOptions;
+  };
 }
 
 interface IConfigDevServeParams {

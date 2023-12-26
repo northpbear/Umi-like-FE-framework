@@ -19,6 +19,7 @@ import { generateEntry } from "./entry";
 import { generateHtml } from "./html";
 import { getUserConfig } from "./config";
 import { reloadClient } from "./esbuild-plugins/live-reload";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 export class DevServe {
   expressApp: ReturnType<typeof express>;
@@ -155,8 +156,8 @@ export const dev = async () => {
     });
 
     async function buildMain({ appData }: { appData: IAppData }) {
-      console.log('buildMain run');
-      
+      console.log("buildMain run");
+
       // 获取用户自定义配置
       const userConfig = await getUserConfig({
         appData,
@@ -174,6 +175,20 @@ export const dev = async () => {
         appData,
         routes,
       });
+
+      // 处理本地代理
+      if (userConfig.proxy) {
+        // see https://github.com/chimurai/http-proxy-middleware
+        Object.entries(userConfig.proxy).forEach(([key, proxyConfig]) => {
+          const target = proxyConfig.target;
+          if (target) {
+            devServe.expressApp.use(
+              key,
+              createProxyMiddleware(key, proxyConfig)
+            );
+          }
+        });
+      }
     }
 
     devServe.expressApp.on("rebuild", async () => {
